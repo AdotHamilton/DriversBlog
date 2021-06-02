@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success!</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/meets" class='navbar-brand'>Meets</a>
+        <a href="discussions" class="navbar-brand">Discussion Boards</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{logged_user.pfp.url}}" height="35px" width="50px" alt=""> My Profile</a></span>
+        <a href="/logout" class="navbar-brand">Logout</a>
+    </nav>
+    <div id="homeContainer" class="d-flex justify-content-between">
+        {% if logged_user.posts.all %}
+        <div id="wall" class="float-right">
+        
+            <h2>My posts</h2>
+            {% for post in logged_user.posts.all %}
+            <div id="userPost">
+                <span>
+                    <h3><u>{{ post.header }}</u> </h3>
+                    <p>Posted by: {{ post.creator.user_name }} on {{ post.created_at }}</p>   
+                </span>
+                {% if post.img %}
+                    <img src="{{ post.img.url }}" width="275px"/>
+                {% endif %}
+                <p>{{ post.content }}</p>
+                {% if logged_user not in post.likes.all  %}
+                <a class='btn btn-primary' href="/likePost/{{ post.id }}">Like</a>
+                {% else %}
+                <p>You like this post</p>
+                {% endif %}
+                <span>{{ post.likes.all|length }} users have liked 
+                    {% if post.creator.id == logged_user.id %}
+                    <a href="/deletePost/{{ post.id }}" class="btn btn-danger" >Delete</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %}
+        <span>
+            <h2>You have no posts</h2>
+            <h6>Start posting to see your posts here</h6>
+        </span>
+        {% endif %}
+        </div>
+        <div id="followingPosts">
+            
+        </div>
+        
+        <div id="postForm" class="ml-3">
+            {% if messages %}
+                <ul class="messages">    
+                {% for message in messages %}    
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <h3>Create Post</h3>
+            <form action="/post" method="POST" enctype="multipart/form-data" >
+                {% csrf_token %}
+                
+                <p>
+                    <label for="header">Post Header</label><br />
+                    <input type="text" name="header" />
+                </p>
+                <p>
+                    <label for="content">Post Body</label><br />
+                    <textarea name="content" maxlength="260" rows="5" cols="40"></textarea>
+                </p>
+                <p>
+                    <input type="hidden" value="{{ logged_user.id }}" name="uid">
+                </p>
+                <p>
+                    <label for="postImg" class="btn btn-success">Post Image</label>
+                    <input type="file" name="img" id="postImg" />
+                </p>
+                <p>
+                    <input type="submit" class="btn btn-primary"/>
+                </p>
+            </form>
+        </div>   
+    </div>
+    
+</body>
+</html>

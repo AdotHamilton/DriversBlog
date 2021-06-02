@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{user.user_name}}'s Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <header class='d-flex justify-content-between'>
+        <img src="{{ user.pfp.url }}" width="75px">
+        <span><h2>{{ user.user_name }}'s Page</h2></span>
+    </header>
+    <div id="wall" class="align-center">
+        {% if user.posts.all %}   
+            <h2>{{ user.user_name }} 's posts</h2>
+            {% for post in user.posts.all %}
+            <div id="userPost">
+                <span>
+                    <h3><u>{{ post.header }}</u> </h3>
+                    <p>Posted by: {{ post.creator.user_name }} on {{ post.created_at }}</p>   
+                </span>
+                {% if post.img %}
+                    <img src="{{ post.img.url }}" width="275px"/>
+                {% endif %}
+                <p>{{ post.content }}</p>
+                {% if logged_user not in post.likes.all  %}
+                <form method="POST" action="/likePost">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}" />
+                    <input type="hidden" name="post_id" value="{{ post.id }}" />
+                    <button class="btn btn-primary"type="submit">Like</button>
+                </form>
+                {% else %}
+                <p>You like this post</p>
+                {% endif %}
+                <span>{{ post.likes.all|length }} users have liked 
+                    {% if post.creator.id == logged_user.id %}
+                    <a href="/deletePost/{{ post.id }}" class="btn btn-danger" >Delete</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %}
+        <span>
+            <h2>You have no posts</h2>
+            <h6>Start posting to see your posts here</h6>
+        </span>
+        {% endif %}
+        </div>    
+</body>
+</html>

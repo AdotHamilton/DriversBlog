@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body style="background-image: url(../static/img/img1.jpg); ">
+    <div class="container" >
+        <header class="header">
+            <h1>Welcome to DriversBlog</h1>
+        </header>
+        <div id="loginReg" class="align-items-center min-vh-100 d-flex justify-content-between">
+
+            <form action='/register' method='POST'>
+                {% csrf_token %}
+                <div>
+                    
+                    {% if messages %}
+                    <ul class="messages">    
+                    {% for message in messages %}    
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div id="reg" class='mainform'>
+                    <h2>Register</h2>
+                    <div class="form-input">
+                        <label for="user_name">Username</label><br />
+                        <input type='text' name='user_name' placeholder='Username'/>
+                    </div>
+                    <div class="form-input">
+                        <label for="email">Email</label><br />
+                        <input type='email' name='email' placeholder='Email'/>
+                    </div>
+                    <div class="form-input">
+                        <label for="password">Password</label><br />
+                        <input type='password' name='password' placeholder="Password"/><br />
+                        <label for="password" id="passwordWarning">Password must be at least 8 characters</label>
+                    </div>
+                    <div class="form-input">
+                        <input type='password' name='confirm_pw' placeholder='Confirm Password'/>
+                    </div>
+                    
+                    <input id="regButton" type='submit' value='Register' class='btn btn-primary' />
+                </div>
+            </form>
+            <form action="/login" method="POST">
+                {% csrf_token %}
+                <div class=''>
+                    
+                </div>
+                <div if="login" class='mainform'>
+                    <h2>Login</h2>
+                    <p>
+                        <input type='text' name='email' placeholder='Email'/>
+                    </p>
+                    <p>
+                        <input type='password' name='password' placeholder="Password"/>
+                    </p>
+                    
+                    <br />
+                    <input type="submit" value="Login" class='btn btn-primary'/>
+                </div>
+            </form>
+        </div>
+        skrt
+
+    </div>
+</body>
+</html>

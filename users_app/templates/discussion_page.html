@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Discussions</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <header class="d-flex justify-content-between">
+
+        <span>
+            
+        </span>
+    </header>
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
+        <a href="/meets" class='navbar-brand'>Meets</a>
+        
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{user.pfp.url}}" height="35px" width="50px" alt=""> My Profile</span></a>
+    </nav>
+</body>
+</html>

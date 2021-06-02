@@ -1,0 +1,127 @@
+.messages {
+    color: red;
+    list-style-type: none;
+    background-color: white;
+    border-radius: 10px;
+}
+.header {
+    background-color:rgb(117, 207, 180);
+    opacity: 0.5;
+    display: block;
+    border-bottom-left-radius:3.5%;
+    border-bottom-right-radius:3.5%;
+    border: 1px solid black;
+    margin-top:25px;
+}
+.header h1{
+    text-align: center;
+}
+.container {
+    max-width: auto;
+    max-height: min-content;
+    margin: 0 auto;
+}
+
+#head {
+    background-color: rgb(117, 207, 180, 0.8);
+}
+
+.logout {
+    text-decoration: none;
+    background-color: black;
+    margin: 10px;
+    padding: 5px;
+    color: white;
+    border-radius: 10%;
+}
+
+.mainform {
+    padding: 25px;
+    background-color: rgb(117, 207, 180, 0.8);
+    border-radius: 25px;
+    border: 1px solid black;
+    text-align: center;
+}
+.mainform h2 {
+    color: white;
+}
+#wall {
+    overflow-y: scroll;
+    min-height:700px;
+    min-width: 300px;
+    margin-right: 25px;
+    max-height: 900px;
+}
+#wall h2 {
+    text-align: center;
+}
+
+.form-input input {
+    margin-top: 10px;
+    border-radius: 5px;;
+}
+#username {
+    display: inline;
+    vertical-align: middle;
+    
+}
+#logout {
+    margin: 15px;
+    vertical-align: middle;
+}
+
+#updateform {
+    display: inline-block;
+    padding: 50px;
+    display:block;
+    color: black;
+}
+#postImg{
+    display: none;
+}  
+
+#userPfp{
+    border: 2px solid black;
+    transition: 1s;
+    width: auto;
+    margin-bottom: 50px;
+    margin-right: auto;
+}
+#userPfp:hover {
+    transform: scale(1.5);
+}
+
+#profile {
+    background-color: white;
+    padding: 25px;
+}
+#userPost {
+    width: 300px;
+    animation: fadein 2s;
+    border: 2px solid black;
+    padding: 10px;
+    margin-top: 10px;
+    
+}
+
+#homeContainer {
+    animation: fadein 2s;
+}
+#userPost p {
+    word-break: break-word;
+    white-space: normal;
+}
+
+#profileLink {
+    text-decoration: none;
+}
+#postForm {
+    padding: 2%;
+}
+#postForm p, h3 {
+    text-align: center;
+}
+@keyframes fadein {
+    0% {opacity: 0;}
+    100% {opacity: 100;}
+}
