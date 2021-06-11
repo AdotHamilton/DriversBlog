@@ -9,19 +9,109 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
-    <header class="d-flex justify-content-between">
-
-        <span>
-            
-        </span>
-    </header>
-    <nav class="navbar navbar-light bg-light">
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
         <span class="navbar-brand">	&#8594; DriversBlog</span>
         <a href="/dashboard" class="navbar-brand">Dashboard</a>
         <a href="/meets" class='navbar-brand'>Meets</a>
-        
-        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{user.pfp.url}}" height="35px" width="50px" alt=""> My Profile</span></a>
+        <a href="/discussions" class="navbar-brand">Discussions</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{ logged_user.pfp.url }}" height="35px" width="50px" alt=""> My Profile</span></a>
     </nav>
+
+
+        <div id="heading" class="d-flex justify-content-around">
+            <div id="formBorder">
+
+                
+                {% if messages %}
+                    <ul class="messages">    
+                    {% for message in messages %}    
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                    <h3>Post to thread</h3>
+                    <form action="/discussions/createPost" method="POST" enctype="multipart/form-data" >
+                        {% csrf_token %}
+                        <input type="hidden" name="thread_id" value="{{ thread.id }}" />
+                        <input type="hidden" name="next" value="{{ request.path }}" />
+                        <p>
+                            <label for="header">Post Header</label><br />
+                            <input type="text" name="header" />
+                        </p>
+                        <p>
+                            <label for="content">Post Body</label><br />
+                            <textarea name="content" maxlength="260" rows="5" cols="40"></textarea>
+                        </p>
+                        <p>
+                            <input type="hidden" value="{{ logged_user.id }}" name="uid">
+                        </p>
+                        <p>
+                            <label for="postImg" class="btn btn-success">Post Image</label>
+                            <input type="file" name="img" id="postImg" />
+                        </p>
+                        <p>
+                            <input type="submit" class="btn btn-primary"/>
+                        </p>
+                    </form>
+            </div>
+            <div id="thread_info">
+                <h3>{{ thread.title }}</h3>
+                {% if thread.year and thread.make and thread.model%}
+                <h6>{{ thread.year }} {{ thread.make }} {{ thread.model }}</h6>
+                {% endif %}
+                <span id="subHeading">
+                    <p>
+                        {{ thread.content }}
+                    </p>
+                    <p>
+                        Created by <img src="{{ thread.creator.pfp.url }}" class=""width="75px">{{ thread.creator.user_name }}
+                        {% if thread.creator.id == user.id %}
+                        <a href="/discussions/{{ thread.id }}/editForm" class="btn btn-success">Edit</a>
+                        <a href="/discussions/{{ thread.id }}/delete" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                    </p>
+                </span>  
+            </div>
+        </div>
+        
+
+    <div class="">
+        
+    <div id="responseWall" class="">
+        {% for post in thread.responses.all %}
+            <div id="thread_response">
+                <h3>{{ post.header }}</h3>
+                <p>Response from: <a href="/users/{{ post.creator.id }}">{{ post.creator.user_name }}</a></p>
+                {% if post.img %}
+                <img src="{{ post.img.url }}" width="300px">
+                {% endif %}
+                <p>{{ post.content }}</p>
+                {% if logged_user not in post.likes.all  %}
+                <span class="d-flex">
+                    <form method="POST" action="/likePost">
+                    {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}" />
+                        <input type="hidden" name="post_id" value="{{ post.id }}" />
+                        <button class="btn btn-primary"type="submit">Like</button>
+                    </form>
+                {% else %}
+                <p><u>You like this post</u></p>
+                {% endif %}
+                    <span class="d-flex">{{ post.likes.all|length }} users have liked 
+                        {% if post.creator.id == logged_user.id %}
+                        <form action="/deletePost/{{ post.id }}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ request.path }}" name="path" />
+                            <input type="submit" class="btn btn-danger" value="Delete"/>
+                        </form>
+                        {% endif %}
+                        </span>  
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+    
+    </div>
 </body>
 </html>

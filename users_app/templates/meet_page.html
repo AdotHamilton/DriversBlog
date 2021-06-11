@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meets: {{ meet.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
+        <a href="/discussions" class="navbar-brand">Discussions</a>
+        <a href="/meets" class="navbar-brand">Back to Meets</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{ logged_user.pfp.url }}" height="35px" width="50px" alt=""> My Profile</span></a>
+    </nav>
+
+    <div id="meet_container" class="d-flex justify-content-around" >
+        <span>
+            <h2>{{ meet.title }}</h2>
+            Created by: <a href="/users/{{ meet.creator.id }}"><img src="{{ meet.creator.pfp.url }}" class="rounded-circle" width="50px">{{ meet.creator.user_name }}</a>
+            <h4>Meet Details:</h4>
+            <p class="">{{ meet.date }} at {{ meet.time }}  </p>
+            <p id="meet_description">{{ meet.description }}</p>
+            <p>{{ meet.attendees.all|length }} drivers attending</p>
+            {% if logged_user not in meet.attendees.all %}
+                <form action="/meets/{{ meet.id }}/attendMeet" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.path }}" name="path">
+                    <input type="submit" class="btn btn-success" value="Attend this meet" >
+                </form>
+            {% endif %}
+        </span>
+        
+    
+
+        <div id="map">
+            <iframe width="600"
+            height="450"
+            style="border:0"
+            loading="lazy"
+            src="https://www.google.com/maps/embed/v1/place?key={{ key }}
+            &q={{ meet.address }}">
+            </iframe>
+        </div>
+    </div>
+</body>
+</html>

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Car Meets</title>
+    <title>Document</title>
+    <title>Find Discussions</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -14,15 +15,33 @@
         <span class="navbar-brand">	&#8594; DriversBlog</span>
         <a href="/dashboard" class="navbar-brand">Dashboard</a>
         <a href="/discussions" class="navbar-brand">Discussions</a>
+        <a href="/meets" class="navbar-brand">Back to Meets</a>
         <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{ logged_user.pfp.url }}" height="35px" width="50px" alt=""> My Profile</span></a>
     </nav>
-    <div>
-        <span class="d-flex justify-content-around">
-           <h3> <a class="btn btn-success"href="/meets/new">+</a> Create Meet</h3>
-            <label for="statesearch"></label>
-            <form action="/meets/findByState" method="POST" >
-                {% csrf_token %}
-                Search by State
+    <div id="new_meet_form">
+        <div id="errors">
+            {% if messages %}
+            <ul class="messages">    
+            {% for message in messages %}    
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        <h2>Start Meet</h2>
+       <form action="/meets/createMeet" method="POST">
+        {% csrf_token %}
+            <p>
+                <label for="title">Title</label><br />
+                <input type="text" name="title" />   
+            </p>
+            <p>
+                <label for="description">Description</label><br />
+                <textarea name="description" maxlength="260" rows="5" cols="40"></textarea>
+            </p>
+            <p>
+                <label for="address">Address</label><br />
+                <input type="text" name="address" />
                 <select name="state">
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
@@ -76,25 +95,21 @@
                     <option value="WI">Wisconsin</option>
                     <option value="WY">Wyoming</option>
                 </select>
-                <input type="submit" value="Search"  class="btn btn-primary"/>
-            </form>
-        </span>
-    </div>
-    <div id="meetsWall">
-        {% for meet in meets.all %}
-            <div id="meet">
-                <h5><a href="/meets/{{ meet.id }}" >{{ meet.title }}</a></h5>
-                {% if meet.state %}
-                <p>Located in {{ meet.state }}</p>
-                {% endif %}
-                <p class="">
-                    Creator: {{ meet.creator.user_name }}
-                    {% if meet.creator.id == logged_user.id %}
-                    <a href="/meets/delete/{{ meet.id }}" class="btn btn-danger">Delete</a>
-                    {% endif %}
-                </p>
-            </div>
-        {% endfor %}
+            </p>
+            
+
+            <p>
+                <label for="date">Meet Date:</label><br />
+                <input type='date' name="date" /> 
+            </p>
+            <p>
+                <label for="time">Time</label><br />
+                <input type="time" name="time" /> 
+            </p>
+            <p>
+                <input type='submit' class="btn btn-primary" value="Submit" />
+            </p>
+        </form> 
     </div>
     
 </body>

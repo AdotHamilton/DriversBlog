@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
+        <a href="/discussions" class="navbar-brand">Discussions</a>
+        <a href="/meets" class="navbar-brand">Back to Meets</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{ logged_user.pfp.url }}" height="35px" width="50px" alt=""> My Profile</span></a>
+    </nav>
+    <div id="formBorder">
+
+                
+        {% if messages %}
+            <ul class="messages">    
+            {% for message in messages %}    
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <h3>Edit Post</h3>
+        <form action="/post/edit" method="POST" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <input type="hidden" value="{{ post.id }}" name="post_id" >
+            
+            <p>
+                <label for="header">Post Header</label><br />
+                <input type="text" value="{{ post.header }}" name="header" />
+            </p>
+            <p>
+                <label for="content">Post Body</label><br />
+                <textarea name="content" maxlength="260" rows="5" cols="40">{{ post.content }}</textarea>
+            </p>
+            <p>
+                <input type="hidden" value="{{ logged_user.id }}" name="uid">
+            </p>
+            <p>
+                <label for="postImg" class="btn btn-success">Post Image</label>
+                <input type="file" name="img" id="postImg" />
+            </p>
+            <p>
+                <input type="submit" class="btn btn-primary"/>
+            </p>
+        </form>
+    </div>
+</body>
+</html>

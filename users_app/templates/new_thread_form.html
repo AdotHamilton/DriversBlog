@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Thread</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body id="pageBody">
+    <div id="threadForm">
+        <h3>New Thread</h3>
+            {% if messages %}
+            <ul class="messages">    
+            {% for message in messages %}    
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+            {% endfor %}
+            </ul>
+            {% endif %}
+        <form action="/discussions/createThread" method="POST">
+            {% csrf_token %}
+            <p>
+                <label for="title">Title</label><br />
+                <input type="text" name="title"/> 
+                
+            </p>
+            <p>
+                <label class="align-center" for="content">Content</label><br />
+                <textarea name="content" maxlength="260" rows="5" cols="30"></textarea>
+            </p>
+            <p>
+                <h3>(Optional) Add vehicle to this thread?</h3>
+                <p>
+                    <label for="make">Make</label><br />
+                    <input type="text" placeholder="Ex. Ford" name="make"/>
+                </p>
+                <p>
+                    <label for="model">Model</label><br />
+                    <input type="text" placeholder="Ex. Mustang" name="model"/>
+                </p>
+                <p>
+                    <label for="year">Year</label><br />
+                    <input type="number" min="1955" max="2021" placeholder="2021" name="year"/>
+                </p>
+                
+            </p>
+            <input type="submit" class="btn btn-success" />
+        </form>
+    </div>
+</body>
+</html>

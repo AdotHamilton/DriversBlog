@@ -9,39 +9,60 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
-    <header class='d-flex justify-content-between'>
-        <img src="{{ user.pfp.url }}" width="75px">
-        <span><h2>{{ user.user_name }}'s Page</h2></span>
-    </header>
-    <div id="wall" class="align-center">
-        {% if user.posts.all %}   
-            <h2>{{ user.user_name }} 's posts</h2>
-            {% for post in user.posts.all %}
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/meets" class='navbar-brand'>Meets</a>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{logged_user.pfp.url}}" height="35px" width="50px" alt=""> My Profile</span></a>
+    </nav>
+    <div id="updateform" class="">
+            
+            <div id="profile" class="d-flex justify-content-between">
+                <span>
+                    <h2>{{ user.user_name }}'s profile</h2><br />
+                    <img src="{{ user.pfp.url }}" id="userPfp" height="250px" width="350"/><br />
+                </span>
+        {% if logged_user.posts.all %}
+        <div id="wall" class="float-right">
+        
+            <h2>{{ user.user_name }}'s posts</h2>
+            {% for post in user.posts.all|dictsortreversed:"created_at" %}
             <div id="userPost">
                 <span>
-                    <h3><u>{{ post.header }}</u> </h3>
-                    <p>Posted by: {{ post.creator.user_name }} on {{ post.created_at }}</p>   
+                    <h3><u>
+                        {{ post.header }}
+                        
+                    </u> </h3>
+                    <p>Posted by:<a href=" /users/{{post.creator.id }}">{{ post.creator.user_name }}</a>
+                         {% if post.thread %}
+                           in: <a href="/discussions/{{ post.thread.id}}">{{ post.thread.title }}</a>
+                        {% endif %}
+                        on {{ post.created_at }}
+                    </p>   
                 </span>
                 {% if post.img %}
                     <img src="{{ post.img.url }}" width="275px"/>
                 {% endif %}
                 <p>{{ post.content }}</p>
                 {% if logged_user not in post.likes.all  %}
-                <form method="POST" action="/likePost">
+                <span class="d-flex">
+                    <form method="POST" action="/likePost">
                     {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.path }}" />
-                    <input type="hidden" name="post_id" value="{{ post.id }}" />
-                    <button class="btn btn-primary"type="submit">Like</button>
-                </form>
+                        <input type="hidden" name="next" value="{{ request.path }}" />
+                        <input type="hidden" name="post_id" value="{{ post.id }}" />
+                        <button class="btn btn-primary"type="submit">Like</button>
+                    </form>
                 {% else %}
                 <p>You like this post</p>
                 {% endif %}
-                <span>{{ post.likes.all|length }} users have liked 
-                    {% if post.creator.id == logged_user.id %}
-                    <a href="/deletePost/{{ post.id }}" class="btn btn-danger" >Delete</a>
-                    {% endif %}
+                    <span>{{ post.likes.all|length }} users have liked 
+                        {% if post.creator.id == logged_user.id %}
+                        <a href="/deletePost/{{ post.id }}" class="btn btn-danger" >Delete</a>
+                        {% endif %}
+                    </span>  
                 </span>
+                
             </div>
             {% endfor %}
         {% else %}
@@ -50,6 +71,8 @@
             <h6>Start posting to see your posts here</h6>
         </span>
         {% endif %}
-        </div>    
+        </div>
+    </div>
+        
 </body>
 </html>

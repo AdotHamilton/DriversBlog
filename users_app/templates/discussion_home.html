@@ -9,19 +9,27 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
-    <header class="d-flex justify-content-between">
-
-        <span>
-            
-        </span>
-    </header>
-    <nav class="navbar navbar-light bg-light">
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
         <span class="navbar-brand">	&#8594; DriversBlog</span>
-        <a href="/dashboard" class="navbar-brand">Dashboard</a>
         <a href="/meets" class='navbar-brand'>Meets</a>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
         
         <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{user.pfp.url}}" height="35px" width="50px" alt=""> My Profile</span></a>
     </nav>
+    
+    <div id="threadWall">
+       <span>
+          <h3> <a class="btn btn-success"href="/discussions/new">+</a> Create Thread</h3>
+       </span>
+        
+        {% for thread in threads %}
+            <div id="thread">
+                
+                <h3><a href="/discussions/{{ thread.id }}">{{ thread.title }}</a></h3>
+                <p>Created by {{ thread.creator.user_name }}, at {{ thread.created_at }}</p>
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

@@ -10,33 +10,39 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
-<body>
-    <div id="head" class="d-flex justify-content-between">
-        <span><h1>DriversBlog</h1></span>
-        <span id="logout"><a href="/dashboard" class="btn btn-primary">Back to Dashboard</a></span>
-    </div>
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
+        <a href="/meets" class='navbar-brand'>Meets</a>
+        <a href="/discussions" class="navbar-brand">Discussions</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{logged_user.pfp.url}}" height="35px" width="50px" alt=""> My Profile</span></a>
+    </nav>
     
     <div id="updateform" class="d-flex justify-content-between">
         <form action="/submitpfp" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <h2>{{ user.user_name }}'s profile</h2><br />
-            <input type="hidden" value="{{ user.id }}" name="user_id" />
+            <h2>{{ logged_user.user_name }}'s profile</h2><br />
+            <input type="hidden" value="{{ logged_user.id }}" name="user_id" />
             <div id="profile"class="">
                 <span>
-                    {% if messages %}
-                    <ul class="messages">    
-                    {% for message in messages %}    
-                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
-                    {% endfor %}
-                    </ul>
-                    {% endif %}
-                    <img src="{{ user.pfp.url }}" id="userPfp" height="250px" width="350"/><br />
+                    <div>
+                    
+                        {% if messages %}
+                        <ul class="messages">    
+                        {% for message in messages %}    
+                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <img src="{{ logged_user.pfp.url }}" id="userPfp" height="250px" width="350"/><br />
                     <label for="postImg" class="btn btn-success" >Change Profile Picture</label><br />
                     <input type="file" name="file" id="postImg">
                     <span>
                         <p>
-                            <label for="username">Username: </label><br/>
-                            <input type="text" value="{{ user.user_name }}" name="user_name" placeholder="{{ user.user_name }}" />
+                            <label for="user_name">Username: </label><br/>
+                            <input type="text" value="{{ logged_user.user_name }}" name="user_name" placeholder="{{ logged_user.user_name }}" />
                         </p>  
                         <p>
                             <label for="password">Update Password: </label><br />
@@ -48,22 +54,62 @@
                         </p>
                     </span>
                 </span>
-                <span>
-                    
-                </span>
-
             </div>
             <input class="btn btn-primary" type="submit">
         </form>
-        <span>
-            {% if user.owned_vehicles.all %}
-            <h3>My Cars</h3>
-            
-            {% for vehicle in user.owned_vehicles.all %}
-
+        {% if logged_user.posts.all %}
+        <div id="wall" class="float-right">
+        
+            <h2>My posts</h2>
+            {% for post in logged_user.posts.all|dictsortreversed:"created_at" %}
+            <div id="userPost">
+                <span>
+                    <h3><u>
+                        {{ post.header }}
+                        
+                    </u> </h3>
+                    <p>Posted by:<a href=" /users/{{post.creator.id }}">{{ post.creator.user_name }}</a>
+                         {% if post.thread %}
+                           in: <a href="/discussions/{{ post.thread.id}}">{{ post.thread.title }}</a>
+                        {% endif %}
+                        on {{ post.created_at }}
+                    </p>   
+                </span>
+                {% if post.img %}
+                    <img src="{{ post.img.url }}" width="275px"/>
+                {% endif %}
+                <p>{{ post.content }}</p>
+                {% if logged_user not in post.likes.all  %}
+                <span class="d-flex">
+                    <form method="POST" action="/likePost">
+                    {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}" />
+                        <input type="hidden" name="post_id" value="{{ post.id }}" />
+                        <button class="btn btn-primary"type="submit">Like</button>
+                    </form>
+                {% else %}
+                <p>You like this post</p>
+                {% endif %}
+                    <span class="d-flex justify-content-between">{{ post.likes.all|length }} users have liked 
+                        {% if post.creator.id == logged_user.id %}
+                        <form action="/deletePost/{{ post.id }}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ request.path }}" name="path" >
+                            <input type="submit" class="btn btn-danger" value="Delete"/>
+                        </form>
+                        {% endif %}
+                    </span>  
+                </span>
+                
+            </div>
             {% endfor %}
-            {% endif %}
+        {% else %}
+        <span>
+            <h2>You have no posts</h2>
+            <h6>Start posting to see your posts here</h6>
         </span>
+        {% endif %}
+        </div>
     </div>
 </body>
 </html>

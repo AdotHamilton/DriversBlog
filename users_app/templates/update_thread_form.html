@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Thread</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="pageBody">
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand">	&#8594; DriversBlog</span>
+        <a href="/dashboard" class="navbar-brand">Dashboard</a>
+        <a href="/meets" class='navbar-brand'>Meets</a>
+        <a href="/discussions" class="navbar-brand">Discussions</a>
+        <span class="navbar-brand"><a href="/profile" id="profileLink"><img class="rounded-circle" src="{{ user.pfp.url }}" height="35px" width="50px" alt=""> My Profile</span></a>
+    </nav>
+
+        <div id="threadForm">
+        {% if messages %}
+            <ul class="updateMessages">    
+            {% for message in messages %}    
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <h3>Edit Thread</h3>
+
+        <form action="/discussions/{{ thread.id }}/update" method="POST">
+            {% csrf_token %}
+            <p>
+                <label for="title">Title</label><br />
+                <input type="text" value="{{ thread.title }}" name="title"/> 
+                
+            </p>
+            <p>
+                <label class="align-center" for="content">Content</label><br />
+                <textarea name="content" maxlength="260" rows="5" cols="30">{{ thread.content }}</textarea>
+            </p>
+            <p>
+                <h3>(Optional) Add vehicle to this thread?</h3>
+                <p>
+                    <label for="make">Make</label><br />
+                    <input type="text" placeholder="Ex. Ford" name="make"/>
+                </p>
+                <p>
+                    <label for="model">Model</label><br />
+                    <input type="text" placeholder="Ex. Mustang" name="model"/>
+                </p>
+                <p>
+                    <label for="year">Year</label><br />
+                    <input type="number" min="1955" max="2021" placeholder="2021" name="year"/>
+                </p>
+                
+            </p>
+            <input type="submit" class="btn btn-success" />
+        </form>
+    </div>
+</body>
+</html>
