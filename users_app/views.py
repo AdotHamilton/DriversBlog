@@ -260,7 +260,7 @@ def updateThread(request, id):
                 
 def meets(request):
     context = {
-        "key": "AIzaSyCoz8Z6Uw7t32gmCymP4lbtR2KpRKWqS68",
+        "key": "API_KEY",
         "meets": Meet.objects.all(),
         "logged_user": User.objects.get(id=request.session["user_id"])
     }
